@@ -4,6 +4,7 @@ FROM  registry.suse.com/bci/golang:1.26@sha256:79ab11123495ceeeeee1155bd164772f9
 ARG ARCH=amd64
 ARG SRC_BRANCH=master
 ARG SRC_TAG
+ARG CACHEBUST
 
 RUN zypper -n ref && \
     zypper update -y
@@ -20,7 +21,10 @@ RUN git clone https://github.com/longhorn/dep-versions.git -b ${SRC_BRANCH} /usr
     if [ -n "${SRC_TAG}" ] && git show-ref --tags ${SRC_TAG} > /dev/null 2>&1; then \
         echo "Checking out tag ${SRC_TAG}"; \
         cd /usr/src/dep-versions && git checkout tags/${SRC_TAG}; \
-    fi
+    fi && \
+    LATEST_SPDK_COMMIT=$(git ls-remote https://github.com/Eu-Arthur/spdk.git HEAD | awk '{ print $1 }') && \
+    jq --arg commit "$LATEST_SPDK_COMMIT" '.spdk.repo = "https://github.com/Eu-Arthur/spdk.git" | .spdk.commit = $commit | del(.spdk.tag)' dep-versions.json > dep-versions.json.tmp && \
+    mv dep-versions.json.tmp dep-versions.json
 
 # Build go-spdk-helper
 RUN export REPO_OVERRIDE="" && \
@@ -38,6 +42,7 @@ FROM registry.suse.com/bci/bci-base:15.7@sha256:3267acc7b9744218250e91e1d2d3176a
 ARG ARCH=amd64
 ARG SRC_BRANCH=master
 ARG SRC_TAG
+ARG CACHEBUST
 
 # Install build dependencies from zypper
 RUN zypper -n ref && \
@@ -56,7 +61,10 @@ RUN git clone https://github.com/longhorn/dep-versions.git -b ${SRC_BRANCH} /usr
     if [ -n "${SRC_TAG}" ] && git show-ref --tags ${SRC_TAG} > /dev/null 2>&1; then \
         echo "Checking out tag ${SRC_TAG}"; \
         cd /usr/src/dep-versions && git checkout tags/${SRC_TAG}; \
-    fi
+    fi && \
+    LATEST_SPDK_COMMIT=$(git ls-remote https://github.com/Eu-Arthur/spdk.git HEAD | awk '{ print $1 }') && \
+    jq --arg commit "$LATEST_SPDK_COMMIT" '.spdk.repo = "https://github.com/Eu-Arthur/spdk.git" | .spdk.commit = $commit | del(.spdk.tag)' dep-versions.json > dep-versions.json.tmp && \
+    mv dep-versions.json.tmp dep-versions.json
 
 # Build liblonghorn
 RUN export REPO_OVERRIDE="" && \

@@ -72,6 +72,7 @@ fi
 IMAGE_ARGS=(--build-arg ARCH="${ARCH}")
 [[ -n "${SRC_BRANCH}" ]] && IMAGE_ARGS+=(--build-arg SRC_BRANCH="${SRC_BRANCH}")
 [[ -n "${SRC_TAG}" ]] && IMAGE_ARGS+=(--build-arg SRC_TAG="${SRC_TAG}")
+[[ -n "${CACHEBUST}" ]] && IMAGE_ARGS+=(--build-arg CACHEBUST="${CACHEBUST}")
 
 # update base image to get latest changes
 grep 'FROM.*/' package/Dockerfile | awk '{print $2}' | while read -r BASE_IMAGE

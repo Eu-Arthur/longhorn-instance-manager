@@ -1,0 +1,33 @@
+name: Sync Upstream
+on:
+  schedule:
+    - cron: '0 */6 * * *' # Toutes les 6 heures
+  workflow_dispatch: # Permet de le lancer manuellement depuis l'onglet Actions
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: change-spdk
+          fetch-depth: 0 # Nécessaire pour avoir tout l'historique pour le rebase
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Sync with Upstream
+        run: |
+          # Ajouter le dépôt original en upstream
+          git remote add upstream https://github.com/longhorn/longhorn-instance-manager.git
+          git fetch upstream master
+          
+          # Tenter le rebase
+          echo "Rebasing change-spdk on upstream/master..."
+          git rebase upstream/master
+          
+          # Pousser les modifications (force nécessaire après un rebase)
+          git push origin change-spdk --force

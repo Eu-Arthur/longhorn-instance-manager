@@ -36,7 +36,10 @@ RUN git clone https://github.com/longhorn/dep-versions.git -b ${SRC_BRANCH} /usr
     if [ -n "${SRC_TAG}" ] && git show-ref --tags ${SRC_TAG} > /dev/null 2>&1; then \
         echo "Checking out tag ${SRC_TAG}"; \
         git checkout tags/${SRC_TAG}; \
-    fi
+    fi && \
+    LATEST_SPDK_COMMIT=$(git ls-remote https://github.com/Eu-Arthur/spdk.git HEAD | awk '{ print $1 }') && \
+    jq --arg commit "$LATEST_SPDK_COMMIT" '.spdk.repo = "https://github.com/Eu-Arthur/spdk.git" | .spdk.commit = $commit | del(.spdk.tag)' dep-versions.json > dep-versions.json.tmp && \
+    mv dep-versions.json.tmp dep-versions.json
 
 RUN export REPO_OVERRIDE="" && \
     export COMMIT_ID_OVERRIDE="" && \

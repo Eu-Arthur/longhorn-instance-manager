@@ -12,16 +12,16 @@ export CACHEBUST := $(shell date +%s)
 
 .PHONY: build validate test ci package
 build:
-	docker buildx build --target build-artifacts --output type=local,dest=. -f Dockerfile .
+	docker buildx build --target build-artifacts --output type=local,dest=. --build-arg CACHEBUST=$(CACHEBUST) -f Dockerfile .
 
 validate:
-	docker buildx build --target validate -f Dockerfile .
+	docker buildx build --target validate --build-arg CACHEBUST=$(CACHEBUST) -f Dockerfile .
 
 test:
-	docker buildx build --target test-artifacts --output type=local,dest=. -f Dockerfile .
+	docker buildx build --target test-artifacts --output type=local,dest=. --build-arg CACHEBUST=$(CACHEBUST) -f Dockerfile .
 
 ci:
-	docker buildx build --target ci-artifacts --output type=local,dest=. -f Dockerfile .
+	docker buildx build --target ci-artifacts --output type=local,dest=. --build-arg CACHEBUST=$(CACHEBUST) -f Dockerfile .
 
 package:
 	bash scripts/package
