@@ -11,7 +11,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          ref: change-spdk
+          ref: master
           fetch-depth: 0 # Nécessaire pour avoir tout l'historique pour le rebase
 
       - name: Configure Git
@@ -26,8 +26,8 @@ jobs:
           git fetch upstream master
           
           # Tenter le rebase
-          echo "Rebasing change-spdk on upstream/master..."
+          echo "Rebasing master on upstream/master..."
           git rebase upstream/master
           
           # Pousser les modifications (force nécessaire après un rebase)
-          git push origin change-spdk --force
+          git push origin master --force
