@@ -23,8 +23,8 @@ RUN git clone https://github.com/longhorn/dep-versions.git -b ${SRC_BRANCH} /usr
         cd /usr/src/dep-versions && git checkout tags/${SRC_TAG}; \
     fi && \
     LATEST_SPDK_COMMIT=$(git ls-remote https://github.com/Eu-Arthur/spdk.git HEAD | awk '{ print $1 }') && \
-    jq --arg commit "$LATEST_SPDK_COMMIT" '.spdk.repo = "https://github.com/Eu-Arthur/spdk.git" | .spdk.commit = $commit | del(.spdk.tag)' dep-versions.json > dep-versions.json.tmp && \
-    mv dep-versions.json.tmp dep-versions.json
+    jq --arg commit "$LATEST_SPDK_COMMIT" '.spdk.repo = "https://github.com/Eu-Arthur/spdk.git" | .spdk.commit = $commit | del(.spdk.tag)' versions.json > versions.json.tmp && \
+    mv versions.json.tmp versions.json
 
 # Build go-spdk-helper
 RUN export REPO_OVERRIDE="" && \
@@ -63,8 +63,8 @@ RUN git clone https://github.com/longhorn/dep-versions.git -b ${SRC_BRANCH} /usr
         cd /usr/src/dep-versions && git checkout tags/${SRC_TAG}; \
     fi && \
     LATEST_SPDK_COMMIT=$(git ls-remote https://github.com/Eu-Arthur/spdk.git HEAD | awk '{ print $1 }') && \
-    jq --arg commit "$LATEST_SPDK_COMMIT" '.spdk.repo = "https://github.com/Eu-Arthur/spdk.git" | .spdk.commit = $commit | del(.spdk.tag)' dep-versions.json > dep-versions.json.tmp && \
-    mv dep-versions.json.tmp dep-versions.json
+    jq --arg commit "$LATEST_SPDK_COMMIT" '.spdk.repo = "https://github.com/Eu-Arthur/spdk.git" | .spdk.commit = $commit | del(.spdk.tag)' versions.json > versions.json.tmp && \
+    mv versions.json.tmp versions.json
 
 # Build liblonghorn
 RUN export REPO_OVERRIDE="" && \
