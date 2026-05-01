@@ -9,6 +9,11 @@ on:
     - v*
   pull_request:
   workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   build_info:
     name: Collect build info
